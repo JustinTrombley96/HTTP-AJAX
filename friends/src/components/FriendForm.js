@@ -37,11 +37,15 @@ export class FriendForm extends Component {
 		e.preventDefault();
 
 		this.props.postFriend(this.props.fullFriend);
+		window.location.reload()
+
 	};
 	addFriend = e => {
 		e.preventDefault();
+	
 
 		this.props.addFriend(this.props.fullFriend);
+
 	};
 
 	render() {
