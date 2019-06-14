@@ -1,80 +1,75 @@
 import React, { Component } from 'react';
-// import axios from 'axios';
 
 export class FriendForm extends Component {
-	// state = {
-	// 	fullFriend : {
-	// 		name  : '',
-	// 		age   : '',
-	// 		email : '',
-	// 	},
-	// };
+	constructor(props) {
+		super(props);
+		this.state = {
+			friend : this.props.activeFriend || {
+				name  : '',
+				age   : '',
+				email : '',
+				id    : 0,
+			},
+			active : false,
+		};
+	}
 
-	// handleChange = e => {
-	// 	this.setState({
-	// 		fullFriend : {
-	// 			...this.state.fullFriend,
-	// 			[e.target.name]: e.target.value,
-	// 		},
-	// 	});
-	// };
+	componentDidUpdate(prevProps) {
+		if (this.props.activeFriend && prevProps.activeFriend !== this.props.activeFriend) {
+			this.setState({ friend: this.props.activeFriend, active: true });
+		}
+	}
 
-	// postFriend = friend => {
-	// 	axios.post('http://localhost:5000/friends', friend).then(res => {
-	// 		console.log(res).catch(err => {
-	// 			console.log(err);
-	// 		});
-	// 	});
-	// 	this.state.postFriend(this.state.fullFriend);
-	// };
-
-	// putFriend = newFriend => {
-	// 	axios.put('http://localhost:3000', newFriend).then(res => console.log(res)).catch(err => console.log(err));
-	// 	this.state.putFriend(this.state.fullFriend);
-	// };
-
-	postFriend = e => {
-		e.preventDefault();
-
-		this.props.postFriend(this.props.fullFriend);
-		window.location.reload()
-
+	changeHandler = e => {
+		e.persist();
+		this.setState(prevState => ({ friend: { ...prevState.friend, [e.target.name]: e.target.value } }));
 	};
-	addFriend = e => {
-		e.preventDefault();
-	
 
-		this.props.addFriend(this.props.fullFriend);
-
+	submitHandler = (e, friend) => {
+		if (this.state.active) {
+			this.props.updateFriend(e, this.state.friend);
+		} else {
+			this.props.addFriend(e, this.state.friend);
+		}
+		this.setState({
+			friend : {
+				name  : '',
+				age   : '',
+				email : '',
+			},
+			active : false,
+		});
 	};
 
 	render() {
 		return (
 			<div>
-				<form onSubmit={this.postFriend}>
-					<h1>Add a New Friend!</h1>
+				<form onSubmit={this.submitHandler}>
 					<input
+						name='name'
 						type='text'
 						placeholder='Name'
-						onChange={this.props.handleChange}
-						value={this.props.fullFriend.name}
-						name='name'
+						value={this.state.friend.name}
+						onChange={this.changeHandler}
+						required
 					/>
 					<input
+						name='age'
 						type='number'
 						placeholder='Age'
-						onChange={this.props.handleChange}
-						value={this.props.fullFriend.age}
-						name='age'
+						value={this.state.friend.age}
+						onChange={this.changeHandler}
+						required
 					/>
 					<input
-						type='text'
-						placeholder='Email'
-						onChange={this.props.handleChange}
-						value={this.props.fullFriend.email}
 						name='email'
+						type='text'
+						placeholder='E-mail'
+						value={this.state.friend.email}
+						onChange={this.changeHandler}
+						required
 					/>
-					<button>Create New Friend</button>
+					<button>{`${this.state.active ? 'Update' : 'Add Friend'}`}</button>
 				</form>
 			</div>
 		);
