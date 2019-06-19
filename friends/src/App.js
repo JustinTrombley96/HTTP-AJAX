@@ -6,17 +6,25 @@ import axios from 'axios';
 import { Route, Link } from 'react-router-dom';
 
 export class App extends Component {
+
+	//Create your state. Pull in the data and set it equal to an empty array.
+
 	state = {
 		friends      : [],
 		error        : '',
 		activeFriend : null,
 	};
+
+	//componentDidMount can only be used once. Use this to get the original data and set the res.data = your new array with your data.
+
 	componentDidMount() {
 		axios
 			.get('http://localhost:5000/friends')
 			.then(res => this.setState({ friends: res.data }))
 			.catch(err => this.setState({ error: err }));
 	}
+
+	
 
 	addFriend = (e, friend) => {
 		e.preventDefault();
